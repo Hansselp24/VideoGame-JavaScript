@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://emoji-css.afeld.me/emoji.css" rel="stylesheet">
+    <link rel="stylesheet" href="./game.css ">
+    <title>Game Minas</title>
+</head>
+<body>
+    <div class="game-container"> 
+        <canvas id="game"></canvas>
+
+        <div class="btns">
+            <button id="up">Arriba</button>
+            <button id="left">Izquierda</button>
+            <button id="right">Derecha</button>
+            <button id="down">Abajo</button>
+        </div>
+
+        <div class="messages">
+            <p>Lifes: <i class="em em-heart" aria-role="presentation" aria-label="HEAVY BLACK HEART"></i><span id="lives"></span></p>
+            <p>Time: <i class="em em-clock1" aria-role="presentation" aria-label="CLOCK FACE ONE OCLOCK"></i></p>
+            <p>Record: <i class="em em-first_place_medal" aria-role="presentation" aria-label="FIRST PLACE MEDAL"></i></p>
+            <p>Parrafo de ejemplo</p>
+        </div>
+    </div>
+
+    <script src="./maps.js"></script>
+    <script src="./game.js"></script>
+</body>
+</html>
