@@ -7,7 +7,9 @@ const btnLeft = document.querySelector(`#left`);
 
 let canvasSize;
 let elementSize;
-let flag = true;
+
+let level = 0;
+let lives = 3;
 
 
 const playerPosition = {
@@ -54,11 +56,18 @@ function startGame() {
     game.font = elementSize + 'px Verdana';
     game.textAlign = 'end';
 
-    const mapsArr = maps[0];
+    const mapsArr = maps[level];
+
+    if(!mapsArr){
+        gameWin();
+        return;
+    }
+
     const mapRows = mapsArr.trim().split(`\n`);
     const mapRowCol = mapRows.map(row => row.trim().split(''));
 
     enemyPositions = [];
+
     game.clearRect(0,0,canvasSize,canvasSize);
 
     mapRowCol.forEach((row, rowI) => {
@@ -75,8 +84,9 @@ function startGame() {
                 }
             } else if(col === `I`) {
                 giftPosition.x = posX;
-                giftPosition.y = posY;
-            } else if(col === `X`) { enemyPositions.push({
+                giftPosition.y = posY;    
+            } 
+            else if(col === `X`) { enemyPositions.push({
                 x: posX,
                 y: posY,
                 });
@@ -94,22 +104,52 @@ function movePlayer(){
     const giftCollision = giftCollisionX && giftCollisionY;
     //esto nos imprime
     if(giftCollision){
-     console.log(`Subiste de nivel`);   
+     levelWin();  
     }
 //si la posicion del jugador es igual a la posicion de la bomba(enemyPositions) nos va arrogar un console log de que chocamos con una bomba.
     const enemyCollision = enemyPositions.find((enemy) => {
-        const enemyCollisionX = enemy.x == playerPosition.x;
-        const enemyCollisionY = enemy.y == playerPosition.y;
+        const enemyCollisionX = enemy.x.toFixed(3) == playerPosition.x.toFixed(3);
+        const enemyCollisionY = enemy.y.toFixed(3)  == playerPosition.y.toFixed(3) ;
         return enemyCollisionX && enemyCollisionY;
     });
 //si chocamos se imprime esto--
-    if(enemyCollision){
-        console.log(`Chocaste con una Bomba`);   
+    if(enemyCollision){ 
+        collisionEnemy();
+        return;
        }
 
     game.fillText(emojis[`PLAYER`], playerPosition.x, playerPosition.y);
 
 }
+
+function levelWin() {
+    console.log(`subiste de nivel`);
+    level++;
+    startGame();
+}
+
+function collisionEnemy(){
+    console.log(`Chocaste con una Bomba`);
+    lives--; 
+    console.log(lives);
+
+    if (lives <= 0){
+        level = 0;
+        console.log(`Perdiste, inicias de nuevo`);
+        lives = 3;
+    }
+        
+    playerPosition.x = undefined;
+    playerPosition.y = undefined;
+    startGame();
+}
+
+function gameWin() {
+    console.log(`Terminaste el juego`);
+}
+
+
+
 
 window.addEventListener(`keydown`, moveByKeys)
 btnUp.addEventListener(`click`, moveUp);
