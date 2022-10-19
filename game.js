@@ -20,6 +20,8 @@ const giftPosition = {
     y: undefined,
 };
 
+let enemyPositions = [];
+
 
 window.addEventListener(`load`, setCanvasSize);
 window.addEventListener(`resize`, setCanvasSize);
@@ -52,11 +54,13 @@ function startGame() {
     game.font = elementSize + 'px Verdana';
     game.textAlign = 'end';
 
-    const mapsArr = maps[1];
+    const mapsArr = maps[0];
     const mapRows = mapsArr.trim().split(`\n`);
     const mapRowCol = mapRows.map(row => row.trim().split(''));
 
+    enemyPositions = [];
     game.clearRect(0,0,canvasSize,canvasSize);
+
     mapRowCol.forEach((row, rowI) => {
         row.forEach((col, colI) => {
             const emoji = emojis[col];
@@ -72,6 +76,10 @@ function startGame() {
             } else if(col === `I`) {
                 giftPosition.x = posX;
                 giftPosition.y = posY;
+            } else if(col === `X`) { enemyPositions.push({
+                x: posX,
+                y: posY,
+                });
             }
         });
     });
@@ -80,12 +88,25 @@ function startGame() {
 }   
 
 function movePlayer(){
+    //si la posicion del jugador es igual a la posicion del regalo nos imprimira que pasamos a otro nivel.
     const giftCollisionX = playerPosition.x.toFixed(3) === giftPosition.x.toFixed(3);
     const giftCollisionY = playerPosition.y.toFixed(3) === giftPosition.y.toFixed(3);
     const giftCollision = giftCollisionX && giftCollisionY;
+    //esto nos imprime
     if(giftCollision){
      console.log(`Subiste de nivel`);   
     }
+//si la posicion del jugador es igual a la posicion de la bomba(enemyPositions) nos va arrogar un console log de que chocamos con una bomba.
+    const enemyCollision = enemyPositions.find((enemy) => {
+        const enemyCollisionX = enemy.x == playerPosition.x;
+        const enemyCollisionY = enemy.y == playerPosition.y;
+        return enemyCollisionX && enemyCollisionY;
+    });
+//si chocamos se imprime esto--
+    if(enemyCollision){
+        console.log(`Chocaste con una Bomba`);   
+       }
+
     game.fillText(emojis[`PLAYER`], playerPosition.x, playerPosition.y);
 
 }
@@ -110,7 +131,7 @@ function moveByKeys(event){
 
 function moveUp(){
     console.log(`moverme hacia arriba`);
-    if(playerPosition.y < elementSize){
+    if(playerPosition.y < elementSize + 1){
        console.log("out up");
     }else {
         playerPosition.y -= elementSize;
@@ -120,7 +141,7 @@ function moveUp(){
 }
 function moveDown(){
     console.log(`moverme hacia abajo`);
-    if(playerPosition.y > elementSize * 9){
+    if(playerPosition.y > (elementSize + 1) * 9){
       console.log(`out down`);
     }else {
         playerPosition.y += elementSize; 
@@ -129,7 +150,7 @@ function moveDown(){
 }    
 function moveLeft(){
     console.log(`moverme hacia la izquierda`);
-    if(playerPosition.x < elementSize * 1){
+    if(playerPosition.x < (elementSize + 10) * 1){
        console.log(`out left`);  
     }else {
         playerPosition.x -= elementSize;
@@ -139,7 +160,7 @@ function moveLeft(){
 }
 function moveRight(){
     console.log(`moverme hacia la derecha`);
-    if (playerPosition.x > elementSize * 9) {
+    if (playerPosition.x > (elementSize + 1) * 9) {
         console.log(`out right`);
     } else {
         playerPosition.x += elementSize;
