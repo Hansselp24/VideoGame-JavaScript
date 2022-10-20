@@ -4,6 +4,7 @@ const btnUp = document.querySelector(`#up`);
 const btnDown = document.querySelector(`#down`);
 const btnRight = document.querySelector(`#right`);
 const btnLeft = document.querySelector(`#left`);
+const spanLives = document.querySelector(`#lives`);
 
 let canvasSize;
 let elementSize;
@@ -66,6 +67,8 @@ function startGame() {
     const mapRows = mapsArr.trim().split(`\n`);
     const mapRowCol = mapRows.map(row => row.trim().split(''));
 
+    showLives();
+
     enemyPositions = [];
 
     game.clearRect(0,0,canvasSize,canvasSize);
@@ -114,8 +117,7 @@ function movePlayer(){
     });
 //si chocamos se imprime esto--
     if(enemyCollision){ 
-        collisionEnemy();
-        return;
+        levelFail();
        }
 
     game.fillText(emojis[`PLAYER`], playerPosition.x, playerPosition.y);
@@ -128,17 +130,16 @@ function levelWin() {
     startGame();
 }
 
-function collisionEnemy(){
+function levelFail(){
     console.log(`Chocaste con una Bomba`);
-    lives--; 
+    lives--;// se encarga de restarle vidas 
     console.log(lives);
-
+// esta condicional se encarga de reducir nuestra cantidad de vidas cada vez que perdemos(son 3 vidas) cuando el contados de lives llegue a 0 nos recargara hasta el nivel 0, osea que perdimos.
     if (lives <= 0){
         level = 0;
         console.log(`Perdiste, inicias de nuevo`);
         lives = 3;
-    }
-        
+    }  
     playerPosition.x = undefined;
     playerPosition.y = undefined;
     startGame();
@@ -148,6 +149,13 @@ function gameWin() {
     console.log(`Terminaste el juego`);
 }
 
+function showLives() {
+   const heartsArray = Array(lives).fill(emojis['HEART']);
+    
+   spanLives.innerHTML = "";
+   heartsArray.forEach(heart => {spanLives.append(heart);}
+    )
+}
 
 
 
