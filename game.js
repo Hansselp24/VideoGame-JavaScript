@@ -7,6 +7,8 @@ const btnLeft = document.querySelector(`#left`);
 const btnStop = document.querySelector(`#stopTime`);
 const spanLives = document.querySelector(`#lives`);
 const spanTime = document.querySelector(`#time`);
+const spanRecord = document.querySelector(`#record`);
+const pResult = document.querySelector(`#result`);
 
 let canvasSize;
 let elementSize;
@@ -41,17 +43,22 @@ window.addEventListener(`resize`, setCanvasSize);
 // game.fillText(`Puto`, 25, 25);
 
 function setCanvasSize() {
+  
   if (window.innerHeight > window.innerWidth) {
-    canvasSize = window.innerWidth * 0.8;
+    canvasSize = window.innerWidth * 0.7;
   } else {
-    canvasSize = window.innerHeight * 0.8;
+    canvasSize = window.innerHeight * 0.7;
   }
+
+  canvasSize = Number(canvasSize.toFixed(0));
 
   canvas.setAttribute("width", canvasSize);
   canvas.setAttribute("height", canvasSize);
 
-  elementSize = canvasSize / 10 + -0.9;
+  elementSize = Number((canvasSize / 10 + -0.9).toFixed(0));
 
+  playerPosition.x = undefined;
+  playerPosition.y = undefined;
   startGame();
 }
 
@@ -62,13 +69,14 @@ function startGame() {
   const mapsArr = maps[level];
 
   if (!mapsArr) {
-    gameWin();
+    levelWinAndRecord();
     return;
   }
 
   if (!timeStart) {
     timeStart = Date.now();
     timeInterval = setInterval(showTime, 100);
+    showRecord();
   }
   const mapRows = mapsArr.trim().split(`\n`);
   const mapRowCol = mapRows.map((row) => row.trim().split(""));
@@ -90,7 +98,7 @@ function startGame() {
           playerPosition.x = posX;
           playerPosition.y = posY;
           console.log({ playerPosition });
-        }
+        } 
       } else if (col === `I`) {
         giftPosition.x = posX;
         giftPosition.y = posY;
@@ -107,6 +115,7 @@ function startGame() {
 }
 
 function movePlayer() {
+
   //si la posicion del jugador es igual a la posicion del regalo nos imprimira que pasamos a otro nivel.
   const giftCollisionX =
     playerPosition.x.toFixed(3) === giftPosition.x.toFixed(3);
@@ -153,9 +162,25 @@ function levelFail() {
   startGame();
 }
 
-function gameWin() {
+function levelWinAndRecord() {
   console.log(`Terminaste el juego`);
   clearInterval(timeInterval);
+
+  const playerTime = Date.now() - timeStart;
+  const recordTime = localStorage.getItem(`Record_Time`);
+  
+if(recordTime){
+    if(recordTime >= playerTime) {
+        localStorage.setItem(`Record_Time`, playerTime);
+        pResult.innerHTML = `TIENES UN NUEVO RECORD`;
+    } else {
+      pResult.innerHTML = `No superaste el record, vuelva a intentarlo`;
+    }
+  } else {
+    localStorage.setItem(`Record_Time`, playerTime);
+  }
+
+  console.log({recordTime, playerTime});
 }
 
 function showLives() {
@@ -173,6 +198,13 @@ function showLives() {
 function showTime() {
   spanTime.innerHTML = Date.now() - timeStart;
 }
+
+function showRecord() {
+  spanRecord.innerHTML = localStorage.getItem(`Record_Time`);
+}
+  
+
+  
 
 window.addEventListener(`keydown`, moveByKeys);
 btnStop.addEventListener(`click`, stopTime);

@@ -57,6 +57,18 @@ body {
   }
 
   @media (max-width: 440px) {
-    button { margin-top: 25px; }
+    button { margin-top: 8px; }
     #up, #down { margin-left: 100%; margin-right: 100%; }
+  }
+
+  @media (max-width: 320px) {
+    body {
+      height: fit-content;
+    }
+    button {
+      margin-top: 8px;
+    }
+    canvas {
+      margin-top: 20px;
+    }
   }
